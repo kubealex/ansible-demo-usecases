@@ -1,0 +1,6 @@
+#### SAMPLE HOSTS
+#[linux_hosts]
+#rhel9-server.rh-lab.labs ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+#[windows_hosts]
+#windows-host.rh-lab.labs ansible_user=Administrator ansible_password="Redhat1!" ansible_port=5985 ansible_connection=winrm

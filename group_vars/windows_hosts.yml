@@ -1,0 +1,12 @@
+users:
+  - name: Alessandro Rossi
+    username: alex
+    password: "Redhat1!"
+    groups:
+      - Users
+  - name: Happy Admin
+    username: happyadmin
+    password: "Redhat1!"
+    groups:
+      - Users
+      - Administrators

@@ -1,0 +1,23 @@
+package_list:
+  - tmux
+  - git
+
+users:
+  - name: Alessandro Rossi
+    uid: 1002
+    username: alex
+    groups:
+      - superusers
+      - admin
+  - name: Happy Admin
+    uid: 1003
+    username: happyadmin
+    groups:
+      - superusers
+      - admin
+
+user_groups:
+  - name: admin
+    gid: 1050
+  - name: superusers
+    gid: 1051
