@@ -1,0 +1,9 @@
+---
+- name: Linux hosts | Install packages and modules with DNF
+  hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  tasks:
+    - name: Linux hosts | Install packages with DNF
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+      become: true

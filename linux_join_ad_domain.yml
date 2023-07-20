@@ -1,0 +1,36 @@
+---
+- name: Linux hosts | Join AD/LDAP realm
+  hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  vars:
+    domain_name: rh-lab.labs
+    domain_admin: admin
+    domain_admin_pwd: admin123
+    domain_user: alessandro.rossi
+  tasks:
+    - name: Linux hosts | Verify user {{ domain_admin }} is not present on the system
+      ansible.builtin.shell: id {{ domain_admin }}
+      ignore_errors: true
+
+    - name: Linux hosts | Install needed packages with DNF
+      ansible.builtin.dnf:
+        name:
+          - samba-common-tools
+          - realmd
+          - oddjob
+          - oddjob-mkhomedir
+          - sssd
+          - adcli
+          - krb5-workstation
+        state: present
+      become: true
+
+    - name: Linux hosts | Join RHEL Machine to LDAP/AD realm
+      ansible.builtin.expect:
+        command: /bin/bash -c "/usr/sbin/realm join --user {{ domain_admin }} {{ domain_name }}"
+        responses:
+          Password for *: "{{ domain_admin_pwd }}"
+        timeout: null
+      become: true
+
+    - name: Linux hosts | Check domain successfully joined
+      ansible.builtin.shell: id {{ domain_user }}

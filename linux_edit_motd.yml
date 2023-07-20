@@ -1,0 +1,10 @@
+---
+- name: Linux hosts | Playbook for MOTD editing
+  hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  tasks:
+    - name: Linux Hosts | Edit MOTD
+      ansible.builtin.template:
+        src: motd.j2
+        dest: /etc/motd
+        mode: 0744
+      become: true

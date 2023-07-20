@@ -1,0 +1,52 @@
+---
+- name: Linux hosts | Install packages and modules with DNF
+  hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  tasks:
+    - name: Linux hosts | Nginx configuration tasks
+      become: true
+      block:
+        - name: Linux hosts | Install packages with DNF
+          ansible.builtin.dnf:
+            name: "nginx"
+            state: present
+          become: true
+
+        - name: Linux hosts | Ensure firewall is configured
+          ansible.posix.firewalld:
+            port: "{{ item }}"
+            state: enabled
+            permanent: true
+          loop:
+            - 80/tcp
+            - 443/tcp
+
+        - name: Linux hosts | Ensure firewalld service is reloaded
+          ansible.builtin.service:
+            name: firewalld
+            enabled: true
+            state: restarted
+
+        - name: Linux hosts | Ensure nginx service is enabled
+          ansible.builtin.service:
+            name: nginx
+            enabled: true
+            state: started
+
+        - name: Linux hosts | Configure nginx
+          ansible.builtin.copy:
+            src: "{{ item }}"
+            dest: /usr/share/nginx/html
+            mode: 0775
+          loop:
+            - index.html
+            - assets
+
+    - name: Linux hosts | Test connection to NGINX
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}"
+      delegate_to: localhost
+
+    - name: Linux hosts | Print URL
+      ansible.builtin.debug:
+        msg:
+          - You can access your webserver at http://{{ ansible_host }}

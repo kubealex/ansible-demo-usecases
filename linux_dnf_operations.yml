@@ -1,0 +1,28 @@
+---
+- name: Linux hosts | Install packages and modules with DNF
+  hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  tasks:
+    - name: Linux hosts | Install packages with DNF
+      ansible.builtin.dnf:
+        name: "{{ package_list }}"
+        state: present
+      become: true
+
+    - name: Linux hosts | Retrieve the list of installed packages, it could take a while
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Linux hosts | Verify packages are installed
+      ansible.builtin.debug:
+        msg: "Package {{ item }} is installed!"
+      loop: "{{ package_list }}"
+      when: item in ansible_facts.packages
+
+    - name: Linux hosts | Test git command
+      ansible.builtin.shell:
+        cmd: git --version
+      register: git_output
+
+    - name: Linux hosts | Print git version
+      ansible.builtin.debug:
+        msg: "{{ git_output.stdout }}"

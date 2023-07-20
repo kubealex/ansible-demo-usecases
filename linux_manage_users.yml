@@ -1,0 +1,23 @@
+---
+- name: Linux hosts | Manage users and groups
+  hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  become: true
+  tasks:
+    - name: Linux hosts | Ensure groups are present
+      ansible.builtin.group:
+        name: "{{ item.name }}"
+        gid: "{{ item.gid }}"
+        state: present
+      loop: "{{ user_groups }}"
+
+    - name: Linux hosts | Ensure users are present with a generated password
+      ansible.builtin.user:
+        name: "{{ item.username }}"
+        uid: "{{ item.uid }}"
+        password: "{{ lookup('ansible.builtin.password', '{{ playbook_dir }}/{{ item.name }}-password length=8 chars=digits') }}"
+        comment: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+        generate_ssh_key: true
+        state: present
+        append: true
+      loop: "{{ users }}"
