@@ -1,0 +1,11 @@
+- name: Windows hosts | Create users on Windows hosts
+  hosts: windows_hosts
+  tasks:
+    - name: Windows hosts | Ensure users are present
+      ansible.windows.win_user:
+        name: "{{ item.username }}"
+        password: "{{ item.password }}"
+        fullname: "{{ item.name }}"
+        state: present
+        groups: "{{ item.groups }}"
+      loop: "{{ users }}"

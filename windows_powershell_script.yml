@@ -1,0 +1,7 @@
+- name: Windows | Run Powershell script
+  hosts: windows_hosts
+  tasks:
+    - name: Execute powershell script
+      ansible.windows.win_powershell:
+        script: |
+          echo "Welcome to Powershell from Ansible"

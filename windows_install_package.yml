@@ -1,0 +1,18 @@
+- name: Windows hosts | Install package from Windows Server
+  hosts: windows_hosts
+  tasks:
+
+    - name: Windows hosts | Create dedicated folder
+      ansible.windows.win_file:
+        name: C:\ansible_examples
+        state: directory
+
+    - name: Windows hosts | Download PuTTY package
+      ansible.windows.win_get_url:
+        url: https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.78-installer.msi
+        dest: C:\ansible_examples\putty-64bit-0.78-installer.msi
+
+    - name: Windows hosts | Install PuTTY
+      ansible.windows.win_package:
+        path: C:\ansible_examples\putty-64bit-0.78-installer.msi
+        state: present

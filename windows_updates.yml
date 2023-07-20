@@ -1,0 +1,25 @@
+- name: Windows hosts | Remove package from Windows Server
+  hosts: windows_hosts
+  tasks:
+    - name: Windows hosts | Ensure demo folder exists
+      ansible.windows.win_file:
+        name: C:\ansible_examples\
+        state: directory
+
+    - name: Windows hosts | Report installable updates
+      ansible.windows.win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+        state: searched
+        log_path: C:\ansible_examples\ansible_wu.txt
+
+    - name: Retrieve remote ini file on a Windows host
+      ansible.builtin.slurp:
+        src: C:\ansible_examples\ansible_wu.txt
+      register: wsus_result
+
+    - name: Print returned information
+      ansible.builtin.debug:
+        msg: "{{ wsus_result['content'] | b64decode }}"

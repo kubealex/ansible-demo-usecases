@@ -1,0 +1,8 @@
+- name: Windows hosts | Create users on Windows hosts
+  hosts: windows_hosts
+  tasks:
+    - name: Windows hosts | Ensure users are not present
+      ansible.windows.win_user:
+        name: "{{ item.username }}"
+        state: absent
+      loop: "{{ users }}"
