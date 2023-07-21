@@ -1,0 +1,20 @@
+---
+- name: Linux hosts | Install and configure Performance Co-Pilot
+  hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  tasks:
+    - name: Linux hosts | Install needed packages
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - pcp
+
+    - name: Linux hosts | Ensure pcp service is enabled and started
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - pmcd
+        - pmproxy
+        - pmlogger
