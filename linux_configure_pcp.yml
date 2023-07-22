@@ -1,6 +1,7 @@
 ---
 - name: Linux hosts | Install and configure Performance Co-Pilot
   hosts: "{{ target_hosts | default('linux_hosts', true) }}"
+  become: true
   tasks:
     - name: Linux hosts | Install needed packages
       ansible.builtin.dnf:
